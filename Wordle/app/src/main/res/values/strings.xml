@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">Wordle</string>
+    <string name="guess_1">Guess #1</string>
+    <string name="guess_2">Guess #2</string>
+    <string name="guess_3">Guess #3</string>
+    <string name="guess_1_check">Guess #1 Check</string>
+    <string name="guess_2_check">Guess #2 Check</string>
+    <string name="guess_3_check">Guess #3 Check</string>
+    <string name="guess_placeholder">XXXX</string>
+    <string name="streak_placeholder">Streak: 0</string>
+    <string name="streak_template">Streak: %s</string>
+    <string name="guess">Guess!</string>
+    <string name="reset">Reset</string>
+    <string name="guest_enter_hint">Enter 4 letters guess here</string>
+    <string name="input_size_error">Guest input must have 4 letters</string>
+    <string name="input_letter_error">Guest input must contain just letters</string>
+    <string name="english">English</string>
+    <string name="spanish">Spanish</string>
+</resources>
