@@ -16,3 +16,4 @@ dependencyResolutionManagement {
 rootProject.name = "Wordle"
 include(":app")
 include(":Wishlist")
+include(":flixter")
