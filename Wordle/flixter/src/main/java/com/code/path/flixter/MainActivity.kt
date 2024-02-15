@@ -2,28 +2,30 @@ package com.code.path.flixter
 
 import android.os.Bundle
 import android.util.DisplayMetrics
-import android.util.Log
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityOptionsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.code.path.flixter.data.MovieResponse
-import com.codepath.asynchttpclient.AsyncHttpClient
-import com.codepath.asynchttpclient.RequestParams
-import com.codepath.asynchttpclient.callback.TextHttpResponseHandler
-import okhttp3.Headers
+import com.code.path.flixter.domain.MoviesRepository
 
-private const val BASE_URL = "https://api.themoviedb.org/3/movie/now_playing"
-private const val API_KEY = "a07e22bc18f5cb106bfe4cc1f83ad8ed"
 private const val LIST_STATE_KEY = "position"
+private const val UPCOMING_LIST_STATE_KEY = "upcoming_position"
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var adapter: ItemsAdapter
+    private lateinit var moviesAdapter: ItemsAdapter
+    private lateinit var upcomingMoviesAdapter: ItemsAdapter
     private lateinit var itemsRecyclerView: RecyclerView
+    private lateinit var upcomingItemsRecyclerView: RecyclerView
+    private val moviesRepository = MoviesRepository()
 
     override fun onSaveInstanceState(state: Bundle) {
         super.onSaveInstanceState(state)
         val position = (itemsRecyclerView.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
         state.putInt(LIST_STATE_KEY, position)
+
+        val upcomingPosition = (upcomingItemsRecyclerView.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
+        state.putInt(UPCOMING_LIST_STATE_KEY, upcomingPosition)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,31 +34,59 @@ class MainActivity : AppCompatActivity() {
         val displayMetrics = DisplayMetrics()
         windowManager.defaultDisplay.getMetrics(displayMetrics)
         setContentView(R.layout.main_activity)
+        initMoviesAdapter(displayMetrics, savedInstanceState)
+        initUpcomingMoviesAdapter(displayMetrics, savedInstanceState)
+    }
+
+    private fun initMoviesAdapter(displayMetrics: DisplayMetrics, savedInstanceState: Bundle?) {
         itemsRecyclerView = findViewById(R.id.itemsRecyclerView)
-        adapter = ItemsAdapter(orientationMetrics = OrientationMetrics.get(this, displayMetrics))
-        itemsRecyclerView.adapter = adapter
-        itemsRecyclerView.layoutManager = LinearLayoutManager(this)
+        moviesAdapter = ItemsAdapter(orientationMetrics = OrientationMetrics.get(this, displayMetrics)) { movieId, view ->
+            val options = ActivityOptionsCompat.makeSceneTransitionAnimation(
+                this@MainActivity,
+                view, "imageMovie"
+            )
+            startActivity(MovieDetailActivity.getIntent(this, movieId), options.toBundle())
+        }
+        itemsRecyclerView.adapter = moviesAdapter
+        itemsRecyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         val position = savedInstanceState?.let { savedInstanceState.getInt(LIST_STATE_KEY, 0) } ?: 0
-        if (adapter.items.isEmpty()) {
+        if (moviesAdapter.items.isEmpty()) {
             fetchMovies(position)
         }
     }
 
-    private fun fetchMovies(currentPosition: Int) {
-        val client = AsyncHttpClient()
-        val params = RequestParams()
-        params["api_key"] = API_KEY
-        client[BASE_URL, params, object : TextHttpResponseHandler() {
-            override fun onSuccess(statusCode: Int, headers: Headers, response: String) {
-                MovieResponse.parseJSON(response)?.also {
-                    adapter.updateItems(it.movies)
-                    itemsRecyclerView.scrollToPosition(currentPosition)
-                }
-            }
+    private fun initUpcomingMoviesAdapter(displayMetrics: DisplayMetrics, savedInstanceState: Bundle?) {
+        upcomingItemsRecyclerView = findViewById(R.id.upcomingRecyclerView)
+        upcomingMoviesAdapter = ItemsAdapter(orientationMetrics = OrientationMetrics.get(this, displayMetrics)) { movieId, view ->
+            val options = ActivityOptionsCompat.makeSceneTransitionAnimation(
+                this@MainActivity,
+                view, "imageMovie"
+            )
+            startActivity(MovieDetailActivity.getIntent(this, movieId), options.toBundle())
+        }
+        upcomingItemsRecyclerView.adapter = upcomingMoviesAdapter
+        upcomingItemsRecyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        val position = savedInstanceState?.let { savedInstanceState.getInt(UPCOMING_LIST_STATE_KEY, 0) } ?: 0
+        if (upcomingMoviesAdapter.items.isEmpty()) {
+            fetchUpcomingMovies(position)
+        }
+    }
 
-            override fun onFailure(statusCode: Int, headers: Headers?, errorResponse: String, t: Throwable?) {
-                Log.e("response", "error: $errorResponse")
+    private fun fetchMovies(currentPosition: Int) {
+        moviesRepository.fetchMovies {
+            it.getOrNull()?.also { movies ->
+                moviesAdapter.updateItems(movies)
+                itemsRecyclerView.scrollToPosition(currentPosition)
             }
-        }]
+        }
+    }
+
+    private fun fetchUpcomingMovies(currentPosition: Int) {
+        moviesRepository.fetchUpcomingMovies {
+            it.getOrNull()?.also { movies ->
+                upcomingMoviesAdapter.updateItems(movies)
+                upcomingItemsRecyclerView.scrollToPosition(currentPosition)
+            }
+        }
     }
 }

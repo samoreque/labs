@@ -13,34 +13,43 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestBuilder
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.target.Target
 import com.code.path.flixter.data.Movie
 
-class ItemsAdapter(var items: List<Movie> = emptyList(), private val orientationMetrics: OrientationMetrics) :
+typealias movieSelected = (Int, View) -> Unit
+
+class ItemsAdapter(
+    var items: List<Movie> = emptyList(),
+    private val orientationMetrics: OrientationMetrics,
+    private val movieSelected: movieSelected
+) :
     RecyclerView.Adapter<ItemsAdapter.ViewHolder>() {
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val titleTextView: TextView = itemView.findViewById(R.id.titleTextView)
-        val overviewTextView: TextView = itemView.findViewById(R.id.overviewTextView)
         val movieImageView: ImageView = itemView.findViewById(R.id.movieImageView)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemsAdapter.ViewHolder {
         val context = parent.context
         val inflater = LayoutInflater.from(context)
-        val contactView = inflater.inflate(R.layout.item, parent, false)
+        val contactView = inflater.inflate(R.layout.banner_item, parent, false)
         return ViewHolder(contactView)
     }
 
     override fun onBindViewHolder(viewHolder: ItemsAdapter.ViewHolder, position: Int) {
         val item: Movie = items[position]
         viewHolder.apply {
+            itemView.setOnClickListener {
+                movieSelected.invoke(item.id, movieImageView)
+            }
             titleTextView.text = item.title
-            overviewTextView.text = item.overview
             Glide.with(viewHolder.itemView.context)
                 .load("https://image.tmdb.org/t/p/w500${item.posterPath}")
                 .placeholder(R.drawable.placeholer)
                 .applyOrientation(orientationMetrics)
+                .transform( RoundedCorners(50))
                 .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
                 .into(movieImageView)
         }

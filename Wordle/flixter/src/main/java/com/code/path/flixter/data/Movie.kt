@@ -16,10 +16,29 @@ data class MovieResponse(
 }
 
 data class Movie(
-    @SerializedName("original_title")
+
+    @SerializedName("id")
+    val id: Int,
+    @SerializedName("title")
     val title: String,
     @SerializedName("overview")
     val overview: String,
     @SerializedName("poster_path")
     val posterPath: String,
-)
+
+    @SerializedName("release_date")
+    val releaseDate: String,
+
+    @SerializedName("popularity")
+    val popularity: Double,
+
+    @SerializedName("original_title")
+    val originalTitle: String,
+) {
+    companion object {
+        fun parseJSON(response: String?): Movie? {
+            val gson = GsonBuilder().create()
+            return gson.fromJson(response, Movie::class.java)
+        }
+    }
+}
