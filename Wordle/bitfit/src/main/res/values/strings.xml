@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">BitFit</string>
+    <string name="you_need_to_input_data_for_today">You need to input data for today!</string>
+    <string name="how_much_did_you_sleep_last_night">How much did you sleep last night?</string>
+    <string name="how_did_you_feel_this_am">How did you feel this AM?</string>
+    <string name="any_other_notes">Any other notes?</string>
+    <string name="notes">Notes</string>
+    <string name="save">Save</string>
+    <string name="average_hours_of_sleep">Average hours of sleep: %s hours</string>
+    <string name="average_feeling">Average feeling: %s</string>
+    <string name="hours_template">Slept %s\nhours</string>
+    <string name="feeling_template">Feeling %s</string>
+</resources>

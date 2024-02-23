@@ -3,6 +3,7 @@ package com.code.path.flixter
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityOptionsCompat
@@ -17,6 +18,9 @@ class MovieDetailActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.movie_detail)
+        intent.extras?.getStringArray("array")?.let {
+            Log.e("tag", it.toString())
+        }
         fetchMovies(intent.getIntExtra(MOVIE_ID_PARAMETER, 0))
     }
 
@@ -42,7 +46,11 @@ class MovieDetailActivity : AppCompatActivity() {
         const val MOVIE_ID_PARAMETER = "movieId"
         fun getIntent(context: Context, movieId: Int): Intent {
             val myIntent = Intent(context, MovieDetailActivity::class.java)
-            myIntent.putExtra(MOVIE_ID_PARAMETER, movieId)
+            Bundle().apply {
+                putStringArray("array",arrayOf("1","2","3"))
+
+                myIntent.putExtras(this)
+            }
             return myIntent
         }
     }
