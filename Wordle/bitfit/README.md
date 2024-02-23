@@ -27,11 +27,11 @@ The following **additional** features are implemented:
 
 - [ ] List anything else that you can get done to improve the app functionality!
 
-## Video Walkthrough
+## Image Walkthrough
 
 Here's a walkthrough of implemented user stories:
 
-<img src='http://i.imgur.com/link/to/your/gif/file.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
+<img src='https://github.com/samoreque/labs/blob/main/Wordle/bitfit/screenshot.png' title='Image Walkthrough' width='' alt='Video Walkthrough' />
 
 
 ## License
