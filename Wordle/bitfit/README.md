@@ -24,7 +24,7 @@ The following **optional** features are implemented:
 
 Here's a walkthrough of implemented user stories:
 
-<img src='https://github.com/samoreque/labs/blob/main/Wordle/bitfit/screenshot.png' title='Image Walkthrough' width='' alt='Video Walkthrough' />
+<img src='https://github.com/samoreque/labs/blob/Unit6/Wordle/bitfit/screenshot.png' title='Image Walkthrough' width='' alt='Video Walkthrough' />
 
 
 ## License
