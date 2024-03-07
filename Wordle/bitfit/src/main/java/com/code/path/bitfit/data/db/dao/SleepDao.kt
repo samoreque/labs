@@ -18,7 +18,12 @@ interface SleepDao {
 
     @Query("SELECT SUM(sleepHours)/ COUNT(*) AS hours, SUM(feelingRate)/ COUNT(*) AS feeling FROM sleep")
     fun getSleepStatistics(): Flow<SleepStatistics>
+
+    @Query("SELECT sleepHours as hour, feelingRate as feeling  FROM sleep")
+    fun getSleepPointData(): Flow<List<SleepPointData>>
 }
+
+data class SleepPointData(val hour: Float, val feeling: Int)
 
 data class SleepStatistics(val hours: Float?, val feeling: Int?) {
 
